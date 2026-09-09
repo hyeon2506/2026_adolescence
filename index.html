@@ -59,7 +59,7 @@ body {
 }
 .hero-inner{max-width:980px;margin:0 auto;text-align:center;}
 .hero-eyebrow {
-  font-family: 'Montserrat', 'Noto Serif KR', sans-serif;
+  font-family: 'Montserrat', 'Noto Sans KR', sans-serif;
   font-size: 14px;
   font-weight: 800;
   letter-spacing: 6px;                  /* 자간을 넓혀 깔끔한 레이아웃 연출 */
@@ -69,10 +69,10 @@ body {
   text-shadow: 0 0 10px rgba(116, 240, 237, 0.4);
 }
 .hero-title {
-  font-family: 'Noto Serif KR', serif; /* 트렌디한 세리프/명조체 적용 */
-  font-size: clamp(38px, 7vw, 60px);
-  font-weight: 900;                    /* 선이 세련되고 또렷하게 보이는 Heavy 굵기 */
-  letter-spacing: -1px;                /* 세리프 특유의 우아함을 살려주는 약간 감싼 자간 */
+  font-family: 'Noto Sans KR', 'Montserrat', sans-serif;
+  font-size: clamp(36px, 7vw, 56px);
+  font-weight: 900;                      /* 두툼하고 선명한 고딕 */
+  letter-spacing: -1px;                  /* 한글 타이틀 밀도감 형성 */
   background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 40%, var(--aurora-pink) 75%, var(--aurora-cyan) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -124,9 +124,9 @@ body {
 }
 
 /* 캐스트 필터 */
-.legend-section{
-  max-width:980px;
-  margin:20px auto;
+.legend-section {
+  max-width: 980px;
+  margin: 0 auto;             /* 기존 상하 margin을 0으로 수정 */
   background: var(--bg-card);
   backdrop-filter: blur(12px);
   padding: 22px;
@@ -134,15 +134,16 @@ body {
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
-.legend-title{
+.legend-title {
   font-family: 'Cinzel', serif;
-  font-size: 13px;
-  letter-spacing: 4px;
+  font-size: 16px;
+  letter-spacing: 3px;
   color: var(--aurora-pink);
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-top: 40px;
+  margin-bottom: 18px;
   text-align: center;
-  text-shadow: 0 0 8px rgba(255, 142, 180, 0.4);
+  text-shadow: 0 0 10px rgba(255, 142, 180, 0.4);
 }
 /* A 한줄, B 한줄로 배치하기 위한 1열 Grid 구성 */
 .legend-grid{
@@ -556,7 +557,7 @@ body {
   <!-- 히어로 헤더 -->
   <div class="hero">
     <div class="hero-inner">
-      <div class="hero-eyebrow"> 뮤지컬 </div>
+      <div class="hero-eyebrow">MUSICAL</div>
       <div class="hero-title"> 사춘기</div>
       <div class="hero-sub">
         <span>2026.11.09 ~ 2027.01.31</span>
@@ -577,32 +578,32 @@ body {
     </div>
   </div>
 
-  <!-- Cast Filter -->
-  <div class="legend-section">
-    <div class="legend-title">CAST FILTER</div>
-    <div class="legend-grid">
-      <div class="legend-group">
-        <div class="legend-role">A</div>
-        <div class="legend-actors">
-          <button class="actor-chip" data-role="A" data-actor="임찬민" onclick="toggleActorFilter(this)">임찬민</button>
-          <button class="actor-chip" data-role="A" data-actor="송영미" onclick="toggleActorFilter(this)">송영미</button>
-          <button class="actor-chip" data-role="A" data-actor="김이담" onclick="toggleActorFilter(this)">김이담</button>		  
-          <button class="actor-chip" data-role="A" data-actor="이승준" onclick="toggleActorFilter(this)">이승준</button>
-          <button class="actor-chip" data-role="A" data-actor="김담현" onclick="toggleActorFilter(this)">김담현</button>
-        </div>
+<!-- Cast Filter -->
+<div class="legend-title">CAST FILTER</div>
+<div class="legend-section">
+  <div class="legend-grid">
+    <div class="legend-group">
+      <div class="legend-role">A</div>
+      <div class="legend-actors">
+        <button class="actor-chip" data-role="A" data-actor="임찬민" onclick="toggleActorFilter(this)">임찬민</button>
+        <button class="actor-chip" data-role="A" data-actor="송영미" onclick="toggleActorFilter(this)">송영미</button>
+        <button class="actor-chip" data-role="A" data-actor="김이담" onclick="toggleActorFilter(this)">김이담</button>		  
+        <button class="actor-chip" data-role="A" data-actor="이승준" onclick="toggleActorFilter(this)">이승준</button>
+        <button class="actor-chip" data-role="A" data-actor="김담현" onclick="toggleActorFilter(this)">김담현</button>
       </div>
-      <div class="legend-group">
-        <div class="legend-role">B</div>
-        <div class="legend-actors">
-          <button class="actor-chip" data-role="B" data-actor="이서영" onclick="toggleActorFilter(this)">이서영</button>
-          <button class="actor-chip" data-role="B" data-actor="전하영" onclick="toggleActorFilter(this)">전하영</button>
-		  <button class="actor-chip" data-role="B" data-actor="동현" onclick="toggleActorFilter(this)">동현</button>
-          <button class="actor-chip" data-role="B" data-actor="김시유" onclick="toggleActorFilter(this)">김시유</button>
-          <button class="actor-chip" data-role="B" data-actor="김찰리" onclick="toggleActorFilter(this)">김찰리</button>
-        </div>
+    </div>
+    <div class="legend-group">
+      <div class="legend-role">B</div>
+      <div class="legend-actors">
+        <button class="actor-chip" data-role="B" data-actor="이서영" onclick="toggleActorFilter(this)">이서영</button>
+        <button class="actor-chip" data-role="B" data-actor="전하영" onclick="toggleActorFilter(this)">전하영</button>
+        <button class="actor-chip" data-role="B" data-actor="동현" onclick="toggleActorFilter(this)">동현</button>
+        <button class="actor-chip" data-role="B" data-actor="김시유" onclick="toggleActorFilter(this)">김시유</button>
+        <button class="actor-chip" data-role="B" data-actor="김찰리" onclick="toggleActorFilter(this)">김찰리</button>
       </div>
     </div>
   </div>
+</div>
 
   <div class="filter-row-top">
     <button class="btn-all active" id="btnAll" onclick="resetFilter()">전체 보기</button>
