@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 뮤지컬 사춘기 정산판</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cormorant+Garamond:ital,wght@1,700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root {
+  /* 밝고 청명한 가을 하늘 & 화사한 핑크 테마 */
+  --bg-dark: #1a365d;              /* 선명하고 맑은 가을 하늘 딥 블루 Base */
+  --bg-card: rgba(255, 255, 255, 0.12); /* 화사함을 살려주는 반투명 글래스 카드 */
+  --bg-card-sub: rgba(255, 255, 255, 0.08);
+
+  --aurora-blue: #3182ce;          /* 화창하고 선명한 코발트 블루 */
+  --aurora-cyan: #63b3ed;          /* 맑은 가을 스카이 블루 */
+  --aurora-pink: #ff7ebd;          /* 깨끗하고 화사한 퓨어 핑크 */
+  --aurora-purple: #e880cc;        /* 은은하게 어우러지는 소프트 라벤더 핑크 */
+
+  --text-main: #ffffff;            /* 또렷한 메인 텍스트 */
+  --text-muted: #cbd5e0;          /* 부드러운 스카이 보조 텍스트 */
+
+  --border-aurora: rgba(99, 179, 237, 0.4);
+  --border-pink: rgba(255, 126, 189, 0.45);
+
+  --sat-blue: #63b3ed;            /* 토요일 */
+  --sun-red: #ff66a1;             /* 일요일 */
+
+  /* 좌석 색상 */
+  --seat-bg: rgba(255, 255, 255, 0.15);
+  --seat-border: rgba(255, 255, 255, 0.25);
+  --seat-wheelchair: #ff7ebd;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(circle at 18% 20%, rgba(255, 126, 189, 0.35) 0%, transparent 45%), /* 화사한 핑크 포인트 */
+    radial-gradient(circle at 82% 25%, rgba(99, 179, 237, 0.4) 0%, transparent 55%),  /* 화창한 스카이 블루 빛 */
+    radial-gradient(circle at 50% 85%, rgba(232, 128, 204, 0.22) 0%, transparent 60%); /* 부드러운 라벤더 핑크 틴트 */
+  background-attachment: fixed;
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 0 0 80px;
+}
+
+/* 히어로 헤더 */
+.hero{
+  background: linear-gradient(180deg, rgba(13, 21, 39, 0.4) 0%, rgba(13, 21, 39, 0.9) 100%);
+  border-bottom: 1px solid var(--border-aurora);
+  backdrop-filter: blur(12px);
+  padding: 45px 16px 30px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+.hero-inner{max-width:980px;margin:0 auto;text-align:center;}
+.hero-eyebrow{
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 8px;
+  color: var(--aurora-cyan);
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(116, 240, 237, 0.5);
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', 'Cinzel', serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: clamp(40px, 8vw, 68px);
+  background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 40%, var(--aurora-pink) 75%, var(--aurora-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 3px;
+  line-height: 1.1;
+  filter: drop-shadow(0 4px 15px rgba(255, 142, 180, 0.3));
+}
+.hero-sub{
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  letter-spacing: 1.5px;
+}
+
+/* 툴바 */
+.toolbar {
+  max-width:980px;
+  margin:24px auto 0;
+  padding:0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.result-count { font-size: 13px; color: var(--text-muted); }
+.result-count strong { color: var(--aurora-cyan); font-weight: 700; }
+.btn-group { display: flex; gap: 8px; }
+.btn {
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 20px;
+  border: 1px solid var(--border-aurora);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn:hover {
+  background: var(--aurora-blue);
+  color: #ffffff;
+  border-color: var(--aurora-cyan);
+  box-shadow: 0 0 15px rgba(42, 186, 194, 0.5);
+}
+
+/* 캐스트 필터 */
+.legend-section{
+  max-width:980px;
+  margin:20px auto;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  padding: 22px;
+  border: 1px solid var(--border-aurora);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+.legend-title{
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--aurora-pink);
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(255, 142, 180, 0.4);
+}
+/* A 한줄, B 한줄로 배치하기 위한 1열 Grid 구성 */
+.legend-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.legend-group {
+  background: var(--bg-card-sub);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.legend-role {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--aurora-cyan);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.legend-role::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 12px;
+  background-color: var(--aurora-pink);
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--aurora-pink);
+}
+.legend-actors { display: flex; gap: 6px; flex-wrap: wrap; }
+.actor-chip{
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: all .25s ease;
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--text-main);
+  flex: 1;
+  text-align: center;
+}
+.actor-chip:hover{
+  border-color: var(--aurora-pink);
+  color: var(--aurora-pink);
+}
+.actor-chip.active{
+  background: linear-gradient(135deg, var(--aurora-blue) 0%, var(--aurora-purple) 100%) !important;
+  color: #ffffff !important;
+  border-color: var(--aurora-cyan) !important;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(116, 240, 237, 0.4);
+}
+
+.filter-row-top { max-width: 980px; margin: 12px auto 0; padding: 0 16px; display: flex; justify-content: flex-end; }
+.btn-all {
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--border-aurora);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-all.active {
+  background: var(--aurora-pink);
+  color: #ffffff;
+  border-color: var(--aurora-pink);
+  box-shadow: 0 0 10px rgba(255, 142, 180, 0.4);
+}
+
+.count-info{text-align:center;font-size:13px;font-weight:700;color:var(--aurora-cyan);margin:24px 0 14px;letter-spacing:1px;}
+
+/* 스케줄 테이블 */
+.table-wrap{
+  max-width:980px;
+  margin:0 auto;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-aurora);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+.table-scroll{overflow-x:auto;}
+.table-header{
+  display:grid;
+  grid-template-columns:52px 32px 48px repeat(2, 1fr) 110px 40px;
+  background: rgba(13, 21, 39, 0.8);
+  padding: 14px 8px;
+  gap: 4px;
+  align-items: center;
+  min-width: 680px;
+  border-bottom: 1px solid var(--border-aurora);
+}
+.th{font-size:11px;font-weight:700;color:var(--aurora-cyan);text-align:center;letter-spacing:1px;}
+
+.month-divider {
+  background: rgba(255, 142, 180, 0.1);
+  color: var(--aurora-pink);
+  font-weight: 700;
+  font-size: 12px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border-pink);
+  border-bottom: 1px solid var(--border-pink);
+  letter-spacing: 2px;
+  text-shadow: 0 0 6px rgba(255, 142, 180, 0.3);
+}
+
+.row{
+  display:grid;
+  grid-template-columns:52px 32px 48px repeat(2, 1fr) 110px 40px;
+  padding: 10px 8px;
+  gap: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  align-items: center;
+  min-width: 680px;
+  background: transparent;
+  transition: background 0.2s;
+}
+.row:nth-child(even){background: var(--bg-card-sub);}
+.row:hover{background: rgba(116, 240, 237, 0.05);}
+.row.hidden{display:none !important;}
+.cell{font-size:12px;color:var(--text-main);text-align:center;}
+.cell.date{font-weight:700;color:var(--text-main);}
+.day-sat{color:var(--sat-blue);font-weight:700;}
+.day-sun{color:var(--sun-red);font-weight:700;}
+.day-wkd{color:var(--text-muted);}
+.cell.time{font-size:11px;color:var(--text-muted);}
+
+.actor-badge{
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 0;
+  border-radius: 6px;
+  display: block;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+}
+
+.copy-btn{
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-aurora);
+  border-radius: 6px;
+  color: var(--aurora-cyan);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 5px;
+  width: 100%;
+  transition: all 0.2s;
+}
+.copy-btn:hover{background:var(--aurora-blue);color:#ffffff;box-shadow: 0 0 8px var(--aurora-blue);}
+
+.seat-input{
+  width:100%;
+  font-size: 11px;
+  padding: 6px;
+  border: 1px solid var(--border-aurora);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--aurora-cyan);
+  text-align: center;
+}
+.seat-input:focus{outline:none;border-color:var(--aurora-pink);box-shadow: 0 0 8px rgba(255, 142, 180, 0.5);}
+
+/* 정산 섹션 */
+.settle-wrap {
+  max-width: 980px;
+  margin: 40px auto 0;
+  padding: 0 16px;
+}
+.settle-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--aurora-pink);
+  margin-bottom: 18px;
+  letter-spacing: 3px;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(255, 142, 180, 0.4);
+}
+
+/* A 한줄, B 한줄로 배치하기 위한 1열 Grid 구성 */
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.role-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-aurora);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.cgl {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--aurora-cyan);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.cgl::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 12px;
+  background-color: var(--aurora-pink);
+  border-radius: 2px;
+}
+
+.counting-box { 
+  display: flex; 
+  justify-content: center;
+  gap: 10px; 
+  flex-wrap: wrap;
+}
+
+.count-card {
+  flex: 1;
+  min-width: 80px;
+  max-width: 120px;
+  background: var(--bg-card-sub);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.cnt-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; color: var(--text-main); }
+.cnt-num { font-size: 22px; font-weight: 900; color: var(--aurora-pink); line-height: 1.1; text-shadow: 0 0 8px rgba(255, 142, 180, 0.4); }
+.cnt-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+.cnt-total-box { display: flex; justify-content: center; margin-top: 24px; }
+.cnt-total-card {
+  width: 200px;
+  background: linear-gradient(135deg, rgba(42, 186, 194, 0.6) 0%, rgba(155, 112, 212, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--aurora-cyan);
+  border-radius: 12px;
+  color: #ffffff;
+  padding: 18px 12px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(116, 240, 237, 0.3);
+}
+.cnt-total-title { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700; letter-spacing: 3px; color: var(--aurora-cyan); }
+.cnt-total-num { font-size: 34px; font-weight: 900; line-height: 1; margin: 6px 0; color: #ffffff; text-shadow: 0 0 10px #ffffff; }
+.cnt-total-of { font-size: 14px; font-weight: 700; color: #e0f2fe; }
+
+/* 좌석 배치도 섹션 */
+.seating-section{
+  max-width:980px;
+  margin:40px auto 0;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  padding: 28px 16px;
+  border: 1px solid var(--border-aurora);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+.seating-title{
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--aurora-cyan);
+  margin-bottom: 6px;
+  text-align: center;
+  letter-spacing: 3px;
+}
+.seating-desc{font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:20px;}
+
+.seat-legend{display:flex;justify-content:center;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);}
+.legend-box{width:14px;height:14px;border-radius:3px;}
+
+.stage-box{
+  width: 100%;
+  max-width: 860px;
+  height: 38px;
+  border: 1px solid var(--border-pink);
+  background: rgba(255, 142, 180, 0.08);
+  color: var(--aurora-pink);
+  font-family: 'Cinzel', sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  letter-spacing: 8px;
+  border-radius: 6px;
+  box-shadow: 0 0 12px rgba(255, 142, 180, 0.2);
+}
+
+.block-headers {
+  display: flex;
+  justify-content: space-between;
+  max-width: 860px;
+  margin: 0 auto 12px;
+  gap: 16px;
+}
+
+.block-header {
+  flex: 1;
+  height: 28px;
+  border: 1px solid var(--border-aurora);
+  background: rgba(42, 186, 194, 0.1);
+  color: var(--aurora-cyan);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.seat-map-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.seat-block { display: flex; flex-direction: column; gap: 3px; }
+.seat-row { display: flex; align-items: center; gap: 3px; }
+
+.row-label-left, .row-label-right {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--aurora-cyan);
+  width: 22px;
+  text-align: center;
+}
+
+.seat-grid { display: flex; gap: 2px; }
+
+.seat {
+  width: 17px;
+  height: 17px;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  background: var(--seat-bg);
+  border: 1px solid var(--seat-border);
+  color: var(--text-main);
+  font-weight: 700;
+  user-select: none;
+  transition: all 0.3s ease;
+}
+
+.seat.wheelchair {
+  background: var(--seat-wheelchair) !important;
+  border-color: var(--aurora-pink) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 6px var(--aurora-pink);
+}
+
+.gap { width: 17px; height: 17px; visibility: hidden; }
+
+/* 관람 횟수별 네온 컬러 (Sky-to-Pink) */
+.seat.count-1 { background: #3b82f6 !important; color: #ffffff !important; border-color: #60a5fa !important; } /* 1회: 선명한 스카이 블루 */
+.seat.count-2 { background: #6366f1 !important; color: #ffffff !important; border-color: #818cf8 !important; } /* 2회: 쿨 인디고 Blue-Violet */
+.seat.count-3 { background: #a855f7 !important; color: #ffffff !important; font-weight: 900; border-color: #c084fc !important; box-shadow: 0 0 6px #a855f7; } /* 3회: 은은한 바이올렛 퍼플 */
+.seat.count-4 { background: #ec4899 !important; color: #ffffff !important; font-weight: 900; border-color: #f472b6 !important; box-shadow: 0 0 8px #ec4899; } /* 4회: 마젠타 핑크 */
+.seat.count-5 { background: #ff7ebd !important; color: #1a365d !important; font-weight: 900; border-color: #ffffff !important; box-shadow: 0 0 10px #ff7ebd; } /* 5회 이상: 메인 퓨어 핑크 */
+
+@media(min-width:768px){
+  .seat{width:18px;height:18px;font-size:9.5px;}
+  .gap{width:18px;height:18px;}
+}
+
+.cell.date, .cell.day {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.sub-text {
+  font-size: 0.75em;
+  font-weight: normal;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+</style>
+</head>
+<body>
+
+  <!-- 히어로 헤더 -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">MUSICAL</div>
+      <div class="hero-title">사춘기</div>
+      <div class="hero-sub">
+        <span>2026.11.09 ~ 2027.01.31</span>
+        <span>•</span>
+        <span>예그린 씨어터</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 상단 툴바 -->
+  <div class="toolbar">
+    <div class="result-count">
+      선택된 검색 결과: <strong id="selected-count">전체</strong>
+    </div>
+    <div class="btn-group">
+      <button class="btn" id="btn-export">내보내기</button>
+      <button class="btn" id="btn-import">가져오기</button>
+    </div>
+  </div>
+
+  <!-- Cast Filter -->
+  <div class="legend-section">
+    <div class="legend-title">CAST FILTER</div>
+    <div class="legend-grid">
+      <div class="legend-group">
+        <div class="legend-role">A</div>
+        <div class="legend-actors">
+          <button class="actor-chip" data-role="A" data-actor="임찬민" onclick="toggleActorFilter(this)">임찬민</button>
+          <button class="actor-chip" data-role="A" data-actor="송영미" onclick="toggleActorFilter(this)">송영미</button>
+          <button class="actor-chip" data-role="A" data-actor="김이담" onclick="toggleActorFilter(this)">김이담</button>		  
+          <button class="actor-chip" data-role="A" data-actor="이승준" onclick="toggleActorFilter(this)">이승준</button>
+          <button class="actor-chip" data-role="A" data-actor="김담현" onclick="toggleActorFilter(this)">김담현</button>
+        </div>
+      </div>
+      <div class="legend-group">
+        <div class="legend-role">B</div>
+        <div class="legend-actors">
+          <button class="actor-chip" data-role="B" data-actor="이서영" onclick="toggleActorFilter(this)">이서영</button>
+          <button class="actor-chip" data-role="B" data-actor="전하영" onclick="toggleActorFilter(this)">전하영</button>
+		  <button class="actor-chip" data-role="B" data-actor="동현" onclick="toggleActorFilter(this)">동현</button>
+          <button class="actor-chip" data-role="B" data-actor="김시유" onclick="toggleActorFilter(this)">김시유</button>
+          <button class="actor-chip" data-role="B" data-actor="김찰리" onclick="toggleActorFilter(this)">김찰리</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-row-top">
+    <button class="btn-all active" id="btnAll" onclick="resetFilter()">전체 보기</button>
+  </div>
+  
+  <div class="count-info" id="countInfo">전체 공연 스케줄</div>
+  
+  <!-- 스케줄 테이블 -->
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <div class="table-header">
+        <div class="th">날짜</div><div class="th">요일</div><div class="th">시간</div>
+        <div class="th">A</div><div class="th">B</div>
+        <div class="th">좌석</div><div class="th">복사</div>
+      </div>
+
+      <div class="month-divider">2026년 11월</div>
+
+<!-- 11.09 (월) 20:00 -->
+<div class="row" data-A="이승준" data-B="김시유">
+  <div class="cell date">11/9<br><span style="font-size: 0.7em; font-weight: normal;">첫공인사</span></div>
+  <div class="cell day">월<br><span style="font-size: 0.7em; font-weight: normal;">프리뷰</span></div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">☂️ 이승준<span style="font-size: 0.7em; font-weight: normal;"> 첫공</span></span></div>
+  <div class="cell"><span class="actor-badge">☂️ 김시유<span style="font-size: 0.7em; font-weight: normal;"> 첫공</span></span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.10 (화) 20:00 -->
+<div class="row" data-A="송영미" data-B="이서영">
+  <div class="cell date">11/10<br><span style="font-size: 0.7em; font-weight: normal;">첫공인사</span></div>
+  <div class="cell day">화<br><span style="font-size: 0.7em; font-weight: normal;">프리뷰</span></div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">☂️ 송영미<span style="font-size: 0.7em; font-weight: normal;"> 첫공</span></span></div>
+  <div class="cell"><span class="actor-badge">☂️ 이서영<span style="font-size: 0.7em; font-weight: normal;"> 첫공</span></span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.11 (수) 20:00 -->
+<div class="row" data-A="임찬민" data-B="전하영">
+  <div class="cell date">11/11<br><span style="font-size: 0.7em; font-weight: normal;">첫공인사</span></div>
+  <div class="cell day">수<br><span style="font-size: 0.7em; font-weight: normal;">프리뷰</span></div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">☂️ 임찬민<span style="font-size: 0.7em; font-weight: normal;"> 첫공</span></span></div>
+  <div class="cell"><span class="actor-badge">☂️ 전하영<span style="font-size: 0.7em; font-weight: normal;"> 첫공</span></span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.12 (목) 20:00 -->
+<div class="row" data-A="김이담" data-B="김찰리">
+  <div class="cell date">11/11<br><span style="font-size: 0.7em; font-weight: normal;">첫공인사</span></div>
+  <div class="cell day">수<br><span style="font-size: 0.7em; font-weight: normal;">프리뷰</span></div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">☂️ 김이담<span style="font-size: 0.7em; font-weight: normal;"> 첫공</span></span></div>
+  <div class="cell"><span class="actor-badge">☂️ 김찰리<span style="font-size: 0.7em; font-weight: normal;"> 첫공</span></span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.13 (금) 20:00 -->
+<div class="row" data-A="김담현" data-B="동현">
+  <div class="cell date">11/13</div>
+  <div class="cell day">금</div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">☂️ 김담현<span style="font-size: 0.7em; font-weight: normal;"> 첫공</span></span></div>
+  <div class="cell"><span class="actor-badge">☂️ 동현<span style="font-size: 0.7em; font-weight: normal;"> 첫공</span></span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.14 (토) 15:00 -->
+<div class="row" data-A="송영미" data-B="전하영">
+  <div class="cell date">11/14</div>
+  <div class="cell day day-sat">토</div>
+  <div class="cell time">15:00</div>
+  <div class="cell"><span class="actor-badge">송영미</span></div>
+  <div class="cell"><span class="actor-badge">전하영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.14 (토) 19:00 -->
+<div class="row" data-A="임찬민" data-B="이서영">
+  <div class="cell date">11/14</div>
+  <div class="cell day day-sat">토</div>
+  <div class="cell time">19:00</div>
+  <div class="cell"><span class="actor-badge">임찬민</span></div>
+  <div class="cell"><span class="actor-badge">이서영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.15 (일) 14:00 -->
+<div class="row" data-A="김이담" data-B="김시유">
+  <div class="cell date">11/15</div>
+  <div class="cell day day-sun">일</div>
+  <div class="cell time">14:00</div>
+  <div class="cell"><span class="actor-badge">김이담</span></div>
+  <div class="cell"><span class="actor-badge">김시유</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.15 (일) 18:00 -->
+<div class="row" data-A="이승준" data-B="동현">
+  <div class="cell date">11/15</div>
+  <div class="cell day day-sun">일</div>
+  <div class="cell time">18:00</div>
+  <div class="cell"><span class="actor-badge">이승준</span></div>
+  <div class="cell"><span class="actor-badge">동현</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.17 (화) 20:00 -->
+<div class="row" data-A="송영미" data-B="이서영">
+  <div class="cell date">11/17</div>
+  <div class="cell day">화</div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">송영미</span></div>
+  <div class="cell"><span class="actor-badge">이서영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.18 (수) 16:00 -->
+<div class="row" data-A="송영미" data-B="전하영">
+  <div class="cell date">11/18</div>
+  <div class="cell day">수</div>
+  <div class="cell time">16:00</div>
+  <div class="cell"><span class="actor-badge">송영미</span></div>
+  <div class="cell"><span class="actor-badge">전하영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.18 (수) 20:00 -->
+<div class="row" data-A="김이담" data-B="동현">
+  <div class="cell date">11/18</div>
+  <div class="cell day">수</div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">김이담</span></div>
+  <div class="cell"><span class="actor-badge">동현</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.19 (목) 20:00 -->
+<div class="row" data-A="임찬민" data-B="이서영">
+  <div class="cell date">11/19</div>
+  <div class="cell day">목</div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">임찬민</span></div>
+  <div class="cell"><span class="actor-badge">이서영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.20 (금) 20:00 -->
+<div class="row" data-A="이승준" data-B="김시유">
+  <div class="cell date">11/20</div>
+  <div class="cell day">금</div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">이승준</span></div>
+  <div class="cell"><span class="actor-badge">김시유</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.21 (토) 15:00 -->
+<div class="row" data-A="임찬민" data-B="이서영">
+  <div class="cell date">11/21</div>
+  <div class="cell day day-sat">토</div>
+  <div class="cell time">15:00</div>
+  <div class="cell"><span class="actor-badge">임찬민</span></div>
+  <div class="cell"><span class="actor-badge">이서영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.21 (토) 19:00 -->
+<div class="row" data-A="김담현" data-B="김시유">
+  <div class="cell date">11/21</div>
+  <div class="cell day day-sat">토</div>
+  <div class="cell time">19:00</div>
+  <div class="cell"><span class="actor-badge">김담현</span></div>
+  <div class="cell"><span class="actor-badge">김시유</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.22 (일) 14:00 -->
+<div class="row" data-A="송영미" data-B="전하영">
+  <div class="cell date">11/22</div>
+  <div class="cell day day-sun">일</div>
+  <div class="cell time">14:00</div>
+  <div class="cell"><span class="actor-badge">송영미</span></div>
+  <div class="cell"><span class="actor-badge">전하영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.22 (일) 18:00 -->
+<div class="row" data-A="이승준" data-B="김찰리">
+  <div class="cell date">11/22</div>
+  <div class="cell day day-sun">일</div>
+  <div class="cell time">18:00</div>
+  <div class="cell"><span class="actor-badge">이승준</span></div>
+  <div class="cell"><span class="actor-badge">김찰리</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.24 (화) 20:00 -->
+<div class="row" data-A="김이담" data-B="동현">
+  <div class="cell date">11/24</div>
+  <div class="cell day">화</div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">김이담</span></div>
+  <div class="cell"><span class="actor-badge">동현</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.25 (수) 16:00 -->
+<div class="row" data-A="송영미" data-B="전하영">
+  <div class="cell date">11/25</div>
+  <div class="cell day">수</div>
+  <div class="cell time">16:00</div>
+  <div class="cell"><span class="actor-badge">송영미</span></div>
+  <div class="cell"><span class="actor-badge">전하영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.25 (수) 20:00 -->
+<div class="row" data-A="김이담" data-B="김시유">
+  <div class="cell date">11/25</div>
+  <div class="cell day">수</div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">김이담</span></div>
+  <div class="cell"><span class="actor-badge">김시유</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.26 (목) 20:00 -->
+<div class="row" data-A="임찬민" data-B="전하영">
+  <div class="cell date">11/26</div>
+  <div class="cell day">목</div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">임찬민</span></div>
+  <div class="cell"><span class="actor-badge">전하영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.27 (금) 20:00 -->
+<div class="row" data-A="이승준" data-B="김찰리">
+  <div class="cell date">11/27</div>
+  <div class="cell day">금</div>
+  <div class="cell time">20:00</div>
+  <div class="cell"><span class="actor-badge">이승준</span></div>
+  <div class="cell"><span class="actor-badge">김찰리</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.28 (토) 15:00 -->
+<div class="row" data-A="송영미" data-B="이서영">
+  <div class="cell date">11/28</div>
+  <div class="cell day day-sat">토</div>
+  <div class="cell time">15:00</div>
+  <div class="cell"><span class="actor-badge">송영미</span></div>
+  <div class="cell"><span class="actor-badge">이서영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.28 (토) 19:00 -->
+<div class="row" data-A="임찬민" data-B="이서영">
+  <div class="cell date">11/28</div>
+  <div class="cell day day-sat">토</div>
+  <div class="cell time">19:00</div>
+  <div class="cell"><span class="actor-badge">임찬민</span></div>
+  <div class="cell"><span class="actor-badge">이서영</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.29 (일) 14:00 -->
+<div class="row" data-A="이승준" data-B="김시유">
+  <div class="cell date">11/29</div>
+  <div class="cell day day-sun">일</div>
+  <div class="cell time">14:00</div>
+  <div class="cell"><span class="actor-badge">이승준</span></div>
+  <div class="cell"><span class="actor-badge">김시유</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+<!-- 11.29 (일) 18:00 -->
+<div class="row" data-A="김담현" data-B="동현">
+  <div class="cell date">11/29</div>
+  <div class="cell day day-sun">일</div>
+  <div class="cell time">18:00</div>
+  <div class="cell"><span class="actor-badge">김담현</span></div>
+  <div class="cell"><span class="actor-badge">동현</span></div>
+  <div class="cell"><input class="seat-input" placeholder=" " oninput="updateAllSeats()"></div>
+  <div class="cell"><button class="copy-btn" onclick="copyRow(this)">☂️</button></div>
+</div>
+
+    </div>
+  </div>
+  
+  <!-- 정산 섹션 -->
+  <div class="settle-wrap">
+    <div class="settle-title">CASTING SETTLEMENT</div>
+    <div class="counting-section">
+      
+      <div class="role-grid">
+        
+        <div class="role-card">
+          <div class="cgl">A</div>
+          <div class="counting-box">    
+            <div class="count-card">
+              <div class="cnt-name">임찬민</div>
+              <div class="cnt-num"><span id="cnt-A-1">0</span></div>
+              <div class="cnt-label" id="lbl-A-1">/ 0회</div>
+            </div>
+            <div class="count-card">
+              <div class="cnt-name">송영미</div>
+              <div class="cnt-num"><span id="cnt-A-2">0</span></div>
+              <div class="cnt-label" id="lbl-A-2">/ 0회</div>
+            </div>
+            <div class="count-card">
+              <div class="cnt-name">김이담</div>
+              <div class="cnt-num"><span id="cnt-A-3">0</span></div>
+              <div class="cnt-label" id="lbl-A-3">/ 0회</div>
+            </div>
+			<div class="count-card">
+              <div class="cnt-name">이승준</div>
+              <div class="cnt-num"><span id="cnt-A-4">0</span></div>
+              <div class="cnt-label" id="lbl-A-4">/ 0회</div>
+            </div>
+            <div class="count-card">
+              <div class="cnt-name">김담현</div>
+              <div class="cnt-num"><span id="cnt-A-5">0</span></div>
+              <div class="cnt-label" id="lbl-A-5">/ 0회</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="role-card">
+          <div class="cgl">B</div>
+          <div class="counting-box">
+            <div class="count-card">
+              <div class="cnt-name">이서영</div>
+              <div class="cnt-num"><span id="cnt-B-1">0</span></div>
+              <div class="cnt-label" id="lbl-B-1">/ 0회</div>
+            </div>
+            <div class="count-card">
+              <div class="cnt-name">전하영</div>
+              <div class="cnt-num"><span id="cnt-B-2">0</span></div>
+              <div class="cnt-label" id="lbl-B-2">/ 0회</div>
+            </div>
+            <div class="count-card">
+              <div class="cnt-name">동현</div>
+              <div class="cnt-num"><span id="cnt-B-3">0</span></div>
+              <div class="cnt-label" id="lbl-B-3">/ 0회</div>
+            </div>
+            <div class="count-card">
+              <div class="cnt-name">김시유</div>
+              <div class="cnt-num"><span id="cnt-B-4">0</span></div>
+              <div class="cnt-label" id="lbl-B-4">/ 0회</div>
+            </div>			
+			<div class="count-card">
+              <div class="cnt-name">김찰리</div>
+              <div class="cnt-num"><span id="cnt-B-5">0</span></div>
+              <div class="cnt-label" id="lbl-B-5">/ 0회</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="cnt-total-box">
+        <div class="cnt-total-card">
+          <div class="cnt-total-title">TOTAL</div>
+          <div class="cnt-total-num">
+            <span id="cnt-total">0</span><span class="cnt-total-of" id="lbl-total-all">/ 0회</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 좌석 배치도 -->
+  <div class="seating-section">
+    <div class="seating-title">SEATING MAP</div>
+    <div class="seating-desc">좌석 입력 시 관람 횟수에 맞춰 도면에 색상이 자동으로 강조됩니다.</div>
+    
+    <div class="seat-legend">
+	<div class="legend-item"><div class="legend-box" style="background:#3b82f6;"></div> 1회</div>
+    <div class="legend-item"><div class="legend-box" style="background:#6366f1;"></div> 2회</div>
+    <div class="legend-item"><div class="legend-box" style="background:#a855f7;"></div> 3회</div>
+    <div class="legend-item"><div class="legend-box" style="background:#ec4899;"></div> 4회</div>
+    <div class="legend-item"><div class="legend-box" style="background:#ff7ebd;"></div> 5회 이상</div>
+    </div>
+
+    <div class="stage-box">STAGE</div>
+
+    <div class="block-headers">
+      <div class="block-header">A</div>
+      <div class="block-header">B</div>
+    </div>
+
+    <div class="seat-map-wrapper">
+      <div class="seat-block" id="blockA"></div>
+      <div class="seat-block" id="blockB"></div>
+    </div>
+  </div>
+
+<script>
+const layoutData = {
+  A: [
+    { row: '1열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { num: 11 }] },
+    { row: '2열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { num: 11 }] },
+    { row: '3열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { num: 11 }] },
+    { row: '4열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { num: 11 }] },
+    { row: '5열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { num: 11 }] },
+    { row: '6열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { num: 11 }] },
+    { row: '7열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { num: 11 }] },
+    { row: '8열', seats: [{ gap: true }, { gap: true }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { num: 11 }] },
+    { row: '9열', seats: [{ gap: true }, { gap: true }, { gap: true }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }] },
+    { row: '10열', seats: [{ gap: true }, { gap: true }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { num: 11 }, { num: 12 }] }
+  ],
+  B: [
+    { row: '1열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { gap: true }] },
+    { row: '2열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { gap: true }] },
+    { row: '3열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { gap: true }] },
+    { row: '4열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { gap: true }] },
+    { row: '5열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { gap: true }] },
+    { row: '6열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { gap: true }] },
+    { row: '7열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { gap: true }] },
+    { row: '8열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { gap: true }, { gap: true }] },
+    { row: '9열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { gap: true }] },
+    { row: '10열', seats: [{ num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }, { num: 7 }, { gap: true }, { gap: true }, { gap: true }, { gap: true }] }
+  ]
+};
+
+function renderSectionalSeatMap() {
+  const renderBlock = (blockKey, containerId, showLeftLabel, showRightLabel) => {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+
+    layoutData[blockKey].forEach(rowData => {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'seat-row';
+
+      if (showLeftLabel) {
+        const lblLeft = document.createElement('div');
+        lblLeft.className = 'row-label-left';
+        lblLeft.innerText = rowData.row;
+        rowDiv.appendChild(lblLeft);
+      }
+
+      const gridDiv = document.createElement('div');
+      gridDiv.className = 'seat-grid';
+
+      rowData.seats.forEach(seatInfo => {
+        if (seatInfo.gap) {
+          const gap = document.createElement('div');
+          gap.className = 'gap';
+          gridDiv.appendChild(gap);
+        } else {
+          const seat = document.createElement('div');
+          seat.className = seatInfo.isWheel ? 'seat wheelchair' : 'seat';
+          seat.innerText = seatInfo.num;
+          
+          seat.dataset.row = rowData.row;
+          seat.dataset.num = seatInfo.num;
+          seat.dataset.block = blockKey;
+
+          gridDiv.appendChild(seat);
+        }
+      });
+
+      rowDiv.appendChild(gridDiv);
+
+      if (showRightLabel) {
+        const lblRight = document.createElement('div');
+        lblRight.className = 'row-label-right';
+        lblRight.innerText = rowData.row;
+        rowDiv.appendChild(lblRight);
+      }
+
+      container.appendChild(rowDiv);
+    });
+  };
+
+  renderBlock('A', 'blockA', true, false);
+  renderBlock('B', 'blockB', false, true);
+}
+
+function updateAllSeats() {
+  document.querySelectorAll('.seat').forEach(seat => {
+    seat.classList.remove('count-1', 'count-2', 'count-3', 'count-4', 'count-5');
+  });
+
+  const seatCounts = {};
+  const inputs = document.querySelectorAll('.seat-input');
+
+  inputs.forEach(input => {
+    const val = input.value.trim();
+    if (!val) return;
+
+    let block = '';
+    if (val.includes('A') || val.includes('가')) block = 'A';
+    else if (val.includes('B') || val.includes('나')) block = 'B';
+
+    const str = val.replace(/\s+/g, '');
+    const rowMatch = str.match(/(\d+열)/);
+    const numMatch = str.match(/(\d+)(?!.*열)/);
+
+    if (rowMatch && numMatch) {
+      const row = rowMatch[0];
+      const num = numMatch[0];
+      
+      const key = block ? `${block}-${row}-${num}` : `${row}-${num}`;
+      seatCounts[key] = (seatCounts[key] || 0) + 1;
+    }
+  });
+
+  document.querySelectorAll('.seat').forEach(seat => {
+    const keyWithBlock = `${seat.dataset.block}-${seat.dataset.row}-${seat.dataset.num}`;
+    const keyWithoutBlock = `${seat.dataset.row}-${seat.dataset.num}`;
+    
+    const count = seatCounts[keyWithBlock] || seatCounts[keyWithoutBlock];
+    if (count) {
+      if (count === 1) seat.classList.add('count-1');
+      else if (count === 2) seat.classList.add('count-2');
+      else if (count === 3) seat.classList.add('count-3');
+      else if (count === 4) seat.classList.add('count-4');
+      else if (count >= 5) seat.classList.add('count-5');
+    }
+  });
+}
+
+function toggleActorFilter(btn) {
+  btn.classList.toggle('active');
+  const btnAll = document.getElementById('btnAll');
+  if (btnAll) btnAll.classList.remove('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const activeChips = document.querySelectorAll('.actor-chip.active');
+  const rows = document.querySelectorAll('.row');
+
+  const selectedFilters = {};
+  activeChips.forEach(chip => {
+    const role = chip.getAttribute('data-role');
+    const actor = chip.getAttribute('data-actor');
+    if (!selectedFilters[role]) selectedFilters[role] = [];
+    selectedFilters[role].push(actor);
+  });
+
+  let visibleCount = 0;
+
+  rows.forEach(row => {
+    let matchesAllRoles = true;
+
+    for (const [role, actors] of Object.entries(selectedFilters)) {
+      const rowActor = row.getAttribute(`data-${role}`);
+      if (!actors.includes(rowActor)) {
+        matchesAllRoles = false;
+        break;
+      }
+    }
+
+    if (matchesAllRoles) {
+      row.classList.remove('hidden');
+      visibleCount++;
+    } else {
+      row.classList.add('hidden');
+    }
+  });
+
+  const activeActorsList = Array.from(activeChips).map(c => c.getAttribute('data-actor'));
+  const countInfo = document.getElementById('countInfo');
+  const selectedCount = document.getElementById('selected-count');
+
+  if (activeChips.length === 0) {
+    resetFilter();
+  } else {
+    if (countInfo) countInfo.innerText = `선택 배우 [${activeActorsList.join(', ')}] 출연 회차 (${visibleCount}회)`;
+    if (selectedCount) selectedCount.innerText = `${visibleCount}건`;
+  }
+}
+
+function resetFilter() {
+  document.querySelectorAll('.actor-chip').forEach(c => c.classList.remove('active'));
+  const btnAll = document.getElementById('btnAll');
+  if (btnAll) btnAll.classList.add('active');
+
+  const rows = document.querySelectorAll('.row');
+  rows.forEach(r => r.classList.remove('hidden'));
+
+  const countInfo = document.getElementById('countInfo');
+  const selectedCount = document.getElementById('selected-count');
+  if (countInfo) countInfo.innerText = '전체 공연 스케줄';
+  if (selectedCount) selectedCount.innerText = `전체`;
+}
+
+function copyRow(btn) {
+  const row = btn.closest('.row');
+  const date = row.querySelector('.date') ? row.querySelector('.date').innerText.replace(/\n/g, ' ') : '';
+  const day = row.querySelector('.day') ? row.querySelector('.day').innerText.replace(/\n/g, ' ') : '';
+  const time = row.querySelector('.time') ? row.querySelector('.time').innerText : '';
+  const seatInput = row.querySelector('.seat-input');
+  const seat = seatInput ? seatInput.value : '';
+
+  const A = row.getAttribute('data-A') || '';
+  const B = row.getAttribute('data-B') || '';
+
+  let text = `[뮤지컬 사춘기] ${date}(${day}) ${time}\n`;
+  text += `· A: ${A}\n· B: ${B}`;
+  if (seat) text += `\n· 내 좌석: ${seat}`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    alert('해당 회차 정보가 복사되었습니다!\n\n' + text);
+  });
+}
+
+function updateCastingCounts() {
+  const allRows = document.querySelectorAll('.row');
+  const totalSchedules = allRows.length;
+
+  const actorTotalMap = {};
+  const actorWatchedMap = {};
+  let totalWatchedCount = 0;
+
+  allRows.forEach(row => {
+    const seatInput = row.querySelector('.seat-input');
+    const isWatched = seatInput && seatInput.value.trim() !== '';
+
+    if (isWatched) {
+      totalWatchedCount++;
+    }
+
+    ['A', 'B'].forEach(role => {
+      const actorName = row.getAttribute(`data-${role}`);
+      if (actorName) {
+        actorTotalMap[actorName] = (actorTotalMap[actorName] || 0) + 1;
+        if (isWatched) {
+          actorWatchedMap[actorName] = (actorWatchedMap[actorName] || 0) + 1;
+        }
+      }
+    });
+  });
+
+  const actorList = [
+    { name: '임찬민', cntId: 'cnt-A-1', lblId: 'lbl-A-1' },
+    { name: '송영미', cntId: 'cnt-A-2', lblId: 'lbl-A-2' },
+    { name: '김이담', cntId: 'cnt-A-3', lblId: 'lbl-A-3' },
+    { name: '이승준', cntId: 'cnt-A-4', lblId: 'lbl-A-4' },
+    { name: '김담현', cntId: 'cnt-A-5', lblId: 'lbl-A-5' },
+    { name: '이서영', cntId: 'cnt-B-1', lblId: 'lbl-B-1' },
+    { name: '전하영', cntId: 'cnt-B-2', lblId: 'lbl-B-2' },
+    { name: '동현', cntId: 'cnt-B-3', lblId: 'lbl-B-3' },
+    { name: '김시유', cntId: 'cnt-B-4', lblId: 'lbl-B-4' },
+    { name: '김찰리', cntId: 'cnt-B-5', lblId: 'lbl-B-5' }
+  ];
+
+  actorList.forEach(item => {
+    const watched = actorWatchedMap[item.name] || 0;
+    const total = actorTotalMap[item.name] || 0;
+
+    const cntEl = document.getElementById(item.cntId);
+    const lblEl = document.getElementById(item.lblId);
+
+    if (cntEl) cntEl.innerText = watched;
+    if (lblEl) lblEl.innerText = `/ ${total}회`;
+  });
+
+  const totalCntEl = document.getElementById('cnt-total');
+  const totalLblEl = document.getElementById('lbl-total-all');
+
+  if (totalCntEl) totalCntEl.innerText = totalWatchedCount;
+  if (totalLblEl) totalLblEl.innerText = `/ ${totalSchedules}회`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderSectionalSeatMap();
+  updateAllSeats();
+  updateCastingCounts();
+
+  const seatInputs = document.querySelectorAll('.seat-input');
+  seatInputs.forEach(input => {
+    input.addEventListener('input', () => {
+      updateAllSeats();
+      updateCastingCounts();
+    });
+  });
+
+  const btnExport = document.getElementById('btn-export');
+  if (btnExport) {
+    btnExport.addEventListener('click', () => {
+      const seatsData = [];
+      document.querySelectorAll('.seat-input').forEach((input, index) => {
+        if (input.value.trim()) {
+          seatsData.push({ index, value: input.value.trim() });
+        }
+      });
+
+      const jsonString = JSON.stringify(seatsData, null, 2);
+      localStorage.setItem('puberty_seat_backup', jsonString);
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "puberty_seat_backup.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      alert('좌석 정보가 파일로 다운로드되었습니다.');
+    });
+  }
+
+  const btnImport = document.getElementById('btn-import');
+  if (btnImport) {
+    btnImport.addEventListener('click', () => {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = '.json';
+
+      fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const seatsData = JSON.parse(event.target.result);
+            const inputs = document.querySelectorAll('.seat-input');
+            
+            inputs.forEach(input => input.value = '');
+
+            seatsData.forEach(item => {
+              if (inputs[item.index]) {
+                inputs[item.index].value = item.value;
+              }
+            });
+
+            updateAllSeats();
+            updateCastingCounts();
+            alert('백업 파일에서 데이터를 성공적으로 불러왔습니다.');
+          } catch (err) {
+            alert('올바르지 않은 백업 파일 형식입니다.');
+          }
+        };
+        reader.readAsText(file);
+      };
+
+      fileInput.click();
+    });
+  }
+});
+</script>
+</body>
+</html>
