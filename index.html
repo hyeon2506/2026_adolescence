@@ -2016,31 +2016,54 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// 1. 자동 저장 함수
+// ==========================================
+// 1. 입력된 모든 데이터(input 값들)를 로컬 스토리지에 자동 저장하는 함수
+// ==========================================
 function autoSaveData() {
-  const saveData = {
-    seatLegendHTML: document.getElementById('seatLegend').innerHTML,
-    // 필요하다면 다른 데이터도 여기에 추가할 수 있습니다.
-  };
-  localStorage.setItem('theatreSeatAppData', JSON.stringify(saveData));
+  const inputs = document.querySelectorAll('.seat-input');
+  const inputValues = Array.from(inputs).map(input => input.value);
+  
+  // input 값들의 배열을 JSON 문자열로 저장
+  localStorage.setItem('theatreSeatInputValues', JSON.stringify(inputValues));
 }
 
-// 2. 페이지가 켜질 때 자동으로 데이터 불러오기
+// ==========================================
+// 2. 사용자가 input에 글을 쓸 때마다 자동으로 저장되도록 이벤트 연결
+// ==========================================
+document.addEventListener('input', function(e) {
+  if (e.target.classList.contains('seat-input')) {
+    autoSaveData();
+    updateAllSeats();
+    updateCastingCounts(); // 만약 이 함수가 있다면 함께 호출
+  }
+});
+
+// ==========================================
+// 3. 페이지가 켜질 때 저장된 데이터 불러와서 input에 채워넣기
+// ==========================================
 window.addEventListener('DOMContentLoaded', () => {
-  const savedString = localStorage.getItem('theatreSeatAppData');
+  const savedString = localStorage.getItem('theatreSeatInputValues');
   if (savedString) {
     try {
-      const saveData = JSON.parse(savedString);
-      if (saveData.seatLegendHTML) {
-        document.getElementById('seatLegend').innerHTML = saveData.seatLegendHTML;
-        
-        // 화면을 갱신하는 함수가 있다면 여기서 한 번 더 실행해 줍니다.
-        if (typeof updateAllSeats === 'function') updateAllSeats();
-        if (typeof updateCastingCounts === 'function') updateCastingCounts();
+      const inputValues = JSON.parse(savedString);
+      const inputs = document.querySelectorAll('.seat-input');
+      
+      // 저장해둔 값들을 각각의 input 창에 다시 쏙쏙 넣어줍니다
+      inputs.forEach((input, index) => {
+        if (inputValues[index] !== undefined) {
+          input.value = inputValues[index];
+        }
+      });
+      
+      // 화면과 카운트를 최신 상태로 업데이트
+      updateAllSeats();
+      if (typeof updateCastingCounts === 'function') {
+        updateCastingCounts();
       }
-      console.log('브라우저에 저장된 데이터를 불러왔습니다.');
+      
+      console.log('저장된 좌석 입력 데이터를 성공적으로 불러왔습니다.');
     } catch (e) {
-      console.error('데이터를 불러오는 중 오류 발생:', e);
+      console.error('데이터 불러오기 실패:', e);
     }
   }
 });
