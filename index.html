@@ -1986,8 +1986,6 @@ const savedString = localStorage.getItem('puberty_seat_backup_v2'); // 충돌 �
   if (btnExport) {
     btnExport.addEventListener('click', () => {
       autoSaveData(); // 최신 상태로 동기화
-      
-      // 'puberty_seat_backup_v2' 키에서 최신 데이터를 가져옵니다.
       const jsonString = localStorage.getItem('puberty_seat_backup_v2');
       
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
@@ -2001,8 +1999,8 @@ const savedString = localStorage.getItem('puberty_seat_backup_v2'); // 충돌 �
       alert('좌석 정보가 파일로 다운로드되었습니다.');
     });
   }
-	
-  // 5. 가져오기 버튼 이벤트 (구버전/신버전 백업 파일 모두 호환)
+
+  // 5. 가져오기 버튼 이벤트 (오류 없이 안전하게 호환되는 버전)
   const btnImport = document.getElementById('btn-import');
   if (btnImport) {
     btnImport.addEventListener('click', () => {
@@ -2022,23 +2020,21 @@ const savedString = localStorage.getItem('puberty_seat_backup_v2'); // 충돌 �
             // 모든 입력창 초기화
             inputs.forEach(input => input.value = '');
 
-            // 1. 파일 데이터가 단순 배열 형태인 경우 (신버전)
-            if (Array.isArray(fileData)) {
-              if (typeof fileData[0] === 'string') {
-                inputs.forEach((input, index) => {
-                  if (fileData[index] !== undefined) {
-                    input.value = fileData[index];
-                  }
-                });
-              } 
-              // 2. 파일 데이터가 객체 배열 형태인 경우 (구버전 호환)
-              else {
-                fileData.forEach(item => {
-                  if (inputs[item.index] !== undefined) {
-                    inputs[item.index].value = item.value;
-                  }
-                });
-              }
+            // 파일 데이터가 객체 배열 형태인 경우 (구버전 호환)
+            if (Array.isArray(fileData) && typeof fileData[0] === 'object' && fileData[0] !== null) {
+              fileData.forEach(item => {
+                if (item.index !== undefined && inputs[item.index] !== undefined) {
+                  inputs[item.index].value = item.value || '';
+                }
+              });
+            } 
+            // 파일 데이터가 단순 문자열 배열 형태인 경우 (신버전)
+            else if (Array.isArray(fileData)) {
+              inputs.forEach((input, index) => {
+                if (fileData[index] !== undefined) {
+                  input.value = fileData[index];
+                }
+              });
             }
 
             autoSaveData(); // 최신 저장소에 반영
