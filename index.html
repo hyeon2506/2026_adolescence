@@ -1938,32 +1938,54 @@ function updateCastingCounts() {
   if (totalLblEl) totalLblEl.innerText = `/ ${totalSchedules}회`;
 }
 
+// 자동 저장 함수 (입력값 전체를 배열로 로컬 스토리지에 기록)
+function autoSaveData() {
+  const inputs = document.querySelectorAll('.seat-input');
+  const inputValues = Array.from(inputs).map(input => input.value);
+  localStorage.setItem('puberty_seat_backup', JSON.stringify(inputValues));
+}
+
+// 페이지가 로드될 때 실행되는 통합 메인 로직
 document.addEventListener('DOMContentLoaded', () => {
   renderSectionalSeatMap();
+
+  const inputs = document.querySelectorAll('.seat-input');
+
+  // 1. 로컬 스토리지에 저장된 데이터 불러와서 input에 채워넣기
+  const savedString = localStorage.getItem('puberty_seat_backup');
+  if (savedString) {
+    try {
+      const inputValues = JSON.parse(savedString);
+      inputs.forEach((input, index) => {
+        if (inputValues[index] !== undefined) {
+          input.value = inputValues[index];
+        }
+      });
+    } catch (e) {
+      console.error('자동 저장 데이터 복원 실패:', e);
+    }
+  }
+
+  // 2. 초기 화면 갱신 및 정산
   updateAllSeats();
   updateCastingCounts();
 
-  const seatInputs = document.querySelectorAll('.seat-input');
-  seatInputs.forEach(input => {
+  // 3. input 값이 바뀔 때마다 실시간 자동 저장 및 화면 업데이트
+  inputs.forEach(input => {
     input.addEventListener('input', () => {
+      autoSaveData();
       updateAllSeats();
       updateCastingCounts();
     });
   });
 
+  // 4. 내보내기 버튼 이벤트
   const btnExport = document.getElementById('btn-export');
   if (btnExport) {
     btnExport.addEventListener('click', () => {
-      const seatsData = [];
-      document.querySelectorAll('.seat-input').forEach((input, index) => {
-        if (input.value.trim()) {
-          seatsData.push({ index, value: input.value.trim() });
-        }
-      });
-
-      const jsonString = JSON.stringify(seatsData, null, 2);
-      localStorage.setItem('puberty_seat_backup', jsonString);
-
+      autoSaveData(); // 최신 상태로 동기화
+      const jsonString = localStorage.getItem('puberty_seat_backup');
+      
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
@@ -1976,6 +1998,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 5. 가져오기 버튼 이벤트
   const btnImport = document.getElementById('btn-import');
   if (btnImport) {
     btnImport.addEventListener('click', () => {
@@ -1990,17 +2013,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const reader = new FileReader();
         reader.onload = (event) => {
           try {
-            const seatsData = JSON.parse(event.target.result);
-            const inputs = document.querySelectorAll('.seat-input');
+            const inputValues = JSON.parse(event.target.result);
             
             inputs.forEach(input => input.value = '');
 
-            seatsData.forEach(item => {
-              if (inputs[item.index]) {
-                inputs[item.index].value = item.value;
-              }
-            });
+            // 배열 형태이거나 기존 객체 형태일 경우 모두 대응
+            if (Array.isArray(inputValues)) {
+              inputs.forEach((input, index) => {
+                if (inputValues[index] !== undefined) {
+                  input.value = inputValues[index];
+                }
+              });
+            } else {
+              // 구버전 객체 형태 백업 파일 호환용
+              inputValues.forEach(item => {
+                if (inputs[item.index]) {
+                  inputs[item.index].value = item.value;
+                }
+              });
+            }
 
+            autoSaveData(); // 로컬 스토리지도 최신으로 갱신
             updateAllSeats();
             updateCastingCounts();
             alert('백업 파일에서 데이터를 성공적으로 불러왔습니다.');
@@ -2013,58 +2046,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       fileInput.click();
     });
-  }
-});
-
-// ==========================================
-// 1. 입력된 모든 데이터(input 값들)를 로컬 스토리지에 자동 저장하는 함수
-// ==========================================
-function autoSaveData() {
-  const inputs = document.querySelectorAll('.seat-input');
-  const inputValues = Array.from(inputs).map(input => input.value);
-  
-  // input 값들의 배열을 JSON 문자열로 저장
-  localStorage.setItem('theatreSeatInputValues', JSON.stringify(inputValues));
-}
-
-// ==========================================
-// 2. 사용자가 input에 글을 쓸 때마다 자동으로 저장되도록 이벤트 연결
-// ==========================================
-document.addEventListener('input', function(e) {
-  if (e.target.classList.contains('seat-input')) {
-    autoSaveData();
-    updateAllSeats();
-    updateCastingCounts(); // 만약 이 함수가 있다면 함께 호출
-  }
-});
-
-// ==========================================
-// 3. 페이지가 켜질 때 저장된 데이터 불러와서 input에 채워넣기
-// ==========================================
-window.addEventListener('DOMContentLoaded', () => {
-  const savedString = localStorage.getItem('theatreSeatInputValues');
-  if (savedString) {
-    try {
-      const inputValues = JSON.parse(savedString);
-      const inputs = document.querySelectorAll('.seat-input');
-      
-      // 저장해둔 값들을 각각의 input 창에 다시 쏙쏙 넣어줍니다
-      inputs.forEach((input, index) => {
-        if (inputValues[index] !== undefined) {
-          input.value = inputValues[index];
-        }
-      });
-      
-      // 화면과 카운트를 최신 상태로 업데이트
-      updateAllSeats();
-      if (typeof updateCastingCounts === 'function') {
-        updateCastingCounts();
-      }
-      
-      console.log('저장된 좌석 입력 데이터를 성공적으로 불러왔습니다.');
-    } catch (e) {
-      console.error('데이터 불러오기 실패:', e);
-    }
   }
 });
 	
