@@ -1942,7 +1942,7 @@ function updateCastingCounts() {
 function autoSaveData() {
   const inputs = document.querySelectorAll('.seat-input');
   const inputValues = Array.from(inputs).map(input => input.value);
-  localStorage.setItem('puberty_seat_backup', JSON.stringify(inputValues));
+  localStorage.setItem('puberty_seat_backup_v2', JSON.stringify(inputValues));
 }
 
 // 페이지가 로드될 때 실행되는 통합 메인 로직
@@ -1952,15 +1952,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputs = document.querySelectorAll('.seat-input');
 
   // 1. 로컬 스토리지에 저장된 데이터 불러와서 input에 채워넣기
-  const savedString = localStorage.getItem('puberty_seat_backup');
+const savedString = localStorage.getItem('puberty_seat_backup_v2'); // 충돌 방지를 위해 키 이름 변경
   if (savedString) {
     try {
       const inputValues = JSON.parse(savedString);
-      inputs.forEach((input, index) => {
-        if (inputValues[index] !== undefined) {
-          input.value = inputValues[index];
-        }
-      });
+      if (Array.isArray(inputValues)) {
+        inputs.forEach((input, index) => {
+          if (typeof inputValues[index] === 'string') {
+            input.value = inputValues[index];
+          }
+        });
+      }
     } catch (e) {
       console.error('자동 저장 데이터 복원 실패:', e);
     }
@@ -1979,12 +1981,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 4. 내보내기 버튼 이벤트
+// 4. 내보내기 버튼 이벤트
   const btnExport = document.getElementById('btn-export');
   if (btnExport) {
     btnExport.addEventListener('click', () => {
       autoSaveData(); // 최신 상태로 동기화
-      const jsonString = localStorage.getItem('puberty_seat_backup');
+      
+      // 'puberty_seat_backup_v2' 키에서 최신 데이터를 가져옵니다.
+      const jsonString = localStorage.getItem('puberty_seat_backup_v2');
       
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonString);
       const downloadAnchor = document.createElement('a');
@@ -1997,7 +2001,7 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('좌석 정보가 파일로 다운로드되었습니다.');
     });
   }
-
+	
   // 5. 가져오기 버튼 이벤트
   const btnImport = document.getElementById('btn-import');
   if (btnImport) {
