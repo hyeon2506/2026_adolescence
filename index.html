@@ -2002,7 +2002,7 @@ const savedString = localStorage.getItem('puberty_seat_backup_v2'); // 충돌 �
     });
   }
 	
-  // 5. 가져오기 버튼 이벤트
+  // 5. 가져오기 버튼 이벤트 (구버전/신버전 백업 파일 모두 호환)
   const btnImport = document.getElementById('btn-import');
   if (btnImport) {
     btnImport.addEventListener('click', () => {
@@ -2017,31 +2017,36 @@ const savedString = localStorage.getItem('puberty_seat_backup_v2'); // 충돌 �
         const reader = new FileReader();
         reader.onload = (event) => {
           try {
-            const inputValues = JSON.parse(event.target.result);
+            const fileData = JSON.parse(event.target.result);
             
+            // 모든 입력창 초기화
             inputs.forEach(input => input.value = '');
 
-            // 배열 형태이거나 기존 객체 형태일 경우 모두 대응
-            if (Array.isArray(inputValues)) {
-              inputs.forEach((input, index) => {
-                if (inputValues[index] !== undefined) {
-                  input.value = inputValues[index];
-                }
-              });
-            } else {
-              // 구버전 객체 형태 백업 파일 호환용
-              inputValues.forEach(item => {
-                if (inputs[item.index]) {
-                  inputs[item.index].value = item.value;
-                }
-              });
+            // 1. 파일 데이터가 단순 배열 형태인 경우 (신버전)
+            if (Array.isArray(fileData)) {
+              if (typeof fileData[0] === 'string') {
+                inputs.forEach((input, index) => {
+                  if (fileData[index] !== undefined) {
+                    input.value = fileData[index];
+                  }
+                });
+              } 
+              // 2. 파일 데이터가 객체 배열 형태인 경우 (구버전 호환)
+              else {
+                fileData.forEach(item => {
+                  if (inputs[item.index] !== undefined) {
+                    inputs[item.index].value = item.value;
+                  }
+                });
+              }
             }
 
-            autoSaveData(); // 로컬 스토리지도 최신으로 갱신
+            autoSaveData(); // 최신 저장소에 반영
             updateAllSeats();
             updateCastingCounts();
             alert('백업 파일에서 데이터를 성공적으로 불러왔습니다.');
           } catch (err) {
+            console.error(err);
             alert('올바르지 않은 백업 파일 형식입니다.');
           }
         };
@@ -2051,7 +2056,6 @@ const savedString = localStorage.getItem('puberty_seat_backup_v2'); // 충돌 �
       fileInput.click();
     });
   }
-});
 	
 </script>
 </body>
